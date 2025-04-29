@@ -1,0 +1,149 @@
+.event-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden; /* To contain floated elements and rounded corners */
+  display: flex; /* Enable flexbox for layout */
+  flex-direction: Column; /* Stack items vertically by default */
+    width: 350px;
+    float: left;
+    margin: 10px 3px;
+    height: 420px;
+
+}
+
+.event-title {
+  background-color:#052E5F;
+  font-size: 1.5rem;
+  font-weight: bold;
+  height:140px;
+  text-align:center;
+  text-decoration:none;
+}
+
+.event-title A {  color: #fff !important; text-decoration:none !important;}
+
+.event-date {background-color: #87C1FF; text-align:center; margin-top: -20px;}
+
+.event-image {margin-top: -30px;}
+
+
+.event-link{
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  margin-top: 10px; /* Space between buttons */
+}
+
+
+
+.event-link:hover {
+  background-color: #0056b3;
+}
+
+.event-card__description {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.event-card__actions {
+  padding: 15px 20px;
+  background-color: #eee;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.event-card__button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  margin-left: 10px; /* Space between buttons */
+}
+
+.event-card__button:hover {
+  background-color: #0056b3;
+}
+
+/* Optional variations */
+
+/* Layout with image on the left */
+.event-card--horizontal {
+  flex-direction: row;
+}
+
+.event-card--horizontal .event-card__image-container {
+  flex-basis: 40%; /* Adjust as needed */
+}
+
+.event-card--horizontal .event-card__image {
+  border-radius: 8px 0 0 8px;
+  aspect-ratio: auto; /* Reset aspect ratio for horizontal layout */
+  height: auto;
+}
+
+.event-card--horizontal .event-card__content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.event-card--horizontal .event-card__actions {
+  border-top: none;
+  border-left: 1px solid #ddd;
+  border-radius: 0 8px 8px 0;
+  padding: 15px;
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically in horizontal layout */
+  justify-content: center; /* Center buttons vertically */
+  align-items: flex-start; /* Align buttons to the start */
+}
+
+.event-card--horizontal .event-card__button {
+  margin-left: 0;
+  margin-bottom: 10px;
+}
+
+.event-card--horizontal .event-card__button:last-child {
+  margin-bottom: 0;
+}
+
+/* Dark theme variation */
+.event-card--dark {
+  background-color: #333;
+  border-color: #555;
+  color: #eee;
+}
+
+.event-card--dark .event-card__title {
+  color: #fff;
+}
+
+.event-card--dark .event-card__meta {
+  color: #bbb;
+}
+
+.event-card--dark .event-card__description {
+  color: #ccc;
+}
+
+.event-card--dark .event-card__actions {
+  background-color: #444;
+  border-color: #555;
+}
+
+/* Add more variations as needed (e.g., different button styles, image overlays) */

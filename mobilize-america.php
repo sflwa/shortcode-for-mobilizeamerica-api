@@ -139,16 +139,17 @@ class Mobilize_America_API {
 function mobilize_america_events_shortcode( $atts ) {
 	$atts = shortcode_atts(
 		array(
-			'organization_id' => '', // Organization ID is now required.
-			'timeslot_start'  => '', // ISO8601 date-time string
-			'timeslot_end'    => '', // ISO8601 date-time string
-            'event_type'      => '', // event type
-            'zipcode'         => '', // zipcode
-            'radius'          => '', // radius
-			'limit'           => 15,    // Maximum number of events to display.
-			'template'        => 'default', //Which template to use
-            'event_id'        => '', //show a single event,
-            'show_description' => 'true', //show description
+		'organization_id' => '', // Organization ID is now required.
+		'timeslot_start'  => '', // ISO8601 date-time string
+		'timeslot_end'    => '', // ISO8601 date-time string
+        	'event_type'      => '', // event type
+            	'zipcode'         => '', // zipcode
+            	'radius'          => '', // radius
+		'limit'           => 15,    // Maximum number of events to display.
+		'template'        => 'default', //Which template to use
+            	'event_id'        => '', //show a single event,
+            	'show_description' => 'true', //show description
+		'is_virtual' 	  => '', // Virtual Only - blank is all
 		),
 		$atts,
 		'mobilize_america_events'
@@ -188,6 +189,12 @@ function mobilize_america_events_shortcode( $atts ) {
         if( !empty( $atts['radius'] ) ) {
              $api_args['radius'] = $atts['radius'];
         }
+
+        if( !empty( $atts['is_virtual'] ) ) {
+             $api_args['is_virtual'] = $atts['is_virtual'];
+        }    
+
+	    
         // Remove empty arguments.
         $api_args = array_filter( $api_args );
 

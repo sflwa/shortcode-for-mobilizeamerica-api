@@ -3,10 +3,13 @@
  * Plugin Name: MobilizeAmerica Shortcode
  * Plugin URI:  https://github.com/sflwa/mobilizeamerica-shortcode/
  * Description: Displays events from Mobilize America on your WordPress site.
- * Version:     1.0.2
+ * Version:     1.0.3
  * Author:      South Florida Web Advisors
  * Author URI:  https://sflwa.net
- * License:     GPL2
+ * License: GPLv2 or later
+ * Requires at least: 6.7
+ * Tested up to: 6.8.1
+ * Stable tag: 1.0.3
  * Text Domain: mobilizeamerica-shortcode
 
  */

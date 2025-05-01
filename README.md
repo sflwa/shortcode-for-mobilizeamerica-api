@@ -1,7 +1,12 @@
-# MobilizeAmerica Shortcode 
-WordPress Plugin to display events from Mobilize.us with a shortcode
-
-This plugin was generated using Google Gemini
+=== MobilizeAmerica Shortcode ===
+Contributors: sflwa
+Tags: shortcode, api
+Requires at least: 6.7
+Tested up to: 6.8.1
+Stable tag: 1.0.3
+Requires PHP: 8.0
+License: GPLv2 or later
+WordPress Plugin to display events from Mobilize.us with a shortcode. This plugin was generated using Google Gemini.
 
 ## Shortcode Attributes
 * is_virtual

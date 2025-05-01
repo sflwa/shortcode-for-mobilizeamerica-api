@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Load plugin text domain for internationalization.
 function mobilize_america_load_textdomain() {
 	load_plugin_textdomain(
-		'mobilize-america-events',
+		'mobilizeamerica-shortcode',
 		false,
 		dirname( plugin_basename( __FILE__ ) ) . '/languages'
 	);
@@ -70,7 +70,7 @@ class Mobilize_America_API {
 
 		// Check for a successful response.
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'api_error', __( 'Error: Unable to connect to the Mobilize America API.', 'mobilize-america-events' ), $response->get_error_message() );
+			return new WP_Error( 'api_error', __( 'Error: Unable to connect to the Mobilize America API.', 'mobilizeamerica-shortcode' ), $response->get_error_message() );
 		}
 
 		$body = wp_remote_retrieve_body( $response );
@@ -82,14 +82,14 @@ class Mobilize_America_API {
             if (isset($data['errors']) && is_array($data['errors'])) {
                 $error_message = implode(", ", $data['errors']); // Combine errors into a single string
             } else {
-                $error_message = sprintf( __( 'Mobilize America API returned an error: %d', 'mobilize-america-events' ), $response_code );
+                $error_message = sprintf( __( 'Mobilize America API returned an error: %d', 'mobilizeamerica-shortcode' ), $response_code );
             }
 			return new WP_Error( 'api_error', $error_message, $data );
 		}
 
 		// Check if the 'data' key exists and is an array.
 		if ( ! isset( $data['data'] ) || ! is_array( $data['data'] ) ) {
-			return new WP_Error( 'api_error', __( 'Error: Invalid data received from the Mobilize America API.', 'mobilize-america-events' ), $data );
+			return new WP_Error( 'api_error', __( 'Error: Invalid data received from the Mobilize America API.', 'mobilizeamerica-shortcode' ), $data );
 		}
 
 		return $data['data'];
@@ -107,7 +107,7 @@ class Mobilize_America_API {
 		$response = wp_remote_get( $url );
 
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'api_error', __( 'Error: Unable to connect to the Mobilize America API.', 'mobilize-america-events' ), $response->get_error_message() );
+			return new WP_Error( 'api_error', __( 'Error: Unable to connect to the Mobilize America API.', 'mobilizeamerica-shortcode' ), $response->get_error_message() );
 		}
 
 		$body = wp_remote_retrieve_body( $response );
@@ -118,13 +118,13 @@ class Mobilize_America_API {
              if (isset($data['errors']) && is_array($data['errors'])) {
                 $error_message = implode(", ", $data['errors']); // Combine errors into a single string
             } else {
-                $error_message = sprintf( __( 'Mobilize America API returned an error: %d', 'mobilize-america-events' ), $response_code );
+                $error_message = sprintf( __( 'Mobilize America API returned an error: %d', 'mobilizeamerica-shortcode' ), $response_code );
             }
 			return new WP_Error( 'api_error', $error_message, $data );
 		}
 
 		if ( ! is_array( $data ) ) {
-			return new WP_Error( 'api_error', __( 'Error: Invalid data received from the Mobilize America API.', 'mobilize-america-events' ), $data );
+			return new WP_Error( 'api_error', __( 'Error: Invalid data received from the Mobilize America API.', 'mobilizeamerica-shortcode' ), $data );
 		}
 		return $data;
 	}
@@ -157,7 +157,7 @@ function mobilize_america_events_shortcode( $atts ) {
 
     // Organization ID is now required.  Return an error if not provided.
     if ( empty( $atts['organization_id'] ) ) {
-        return '<div class="mobilize-america-error">' . esc_html__( 'Error: organization_id attribute is required.', 'mobilize-america-events' ) . '</div>';
+        return '<div class="mobilize-america-error">' . esc_html__( 'Error: organization_id attribute is required.', 'mobilizeamerica-shortcode' ) . '</div>';
     }
 
 	$api = new Mobilize_America_API( $atts['organization_id'] ); // Pass org ID to API class.
@@ -207,13 +207,13 @@ function mobilize_america_events_shortcode( $atts ) {
 
 
 	if ( empty( $events ) ) {
-		return '<div class="mobilize-america-no-events">' . esc_html__( 'No events found.', 'mobilize-america-events' ) . '</div>';
+		return '<div class="mobilize-america-no-events">' . esc_html__( 'No events found.', 'mobilizeamerica-shortcode' ) . '</div>';
 	}
 
-	$output = '<div class="mobilize-america-events-wrapper">';
+	$output = '<div class="mobilizeamerica-shortcode-wrapper">';
 
     // Include CSS file.
-    wp_enqueue_style( 'mobilize-america-events-styles', plugin_dir_url( __FILE__ ) . 'css/mobilize-america-events.css', array(), '1.0.0' );
+    wp_enqueue_style( 'mobilizeamerica-shortcode-styles', plugin_dir_url( __FILE__ ) . 'css/mobilizeamerica-shortcode.css', array(), '1.0.0' );
 
 
     if ($atts['template'] == 'card') {
@@ -242,7 +242,7 @@ function mobilize_america_events_shortcode( $atts ) {
             }
 
           //  $output .= '<p class="event-location">' . esc_html( $event['location']['venue_name'] ) . ', ' . esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] ) . '</p>';
-            $output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here for more information', 'mobilize-america-events' ) . '</a>';
+            $output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here for more information', 'mobilizeamerica-shortcode' ) . '</a>';
             $output .= '</div>'; // Close event-card
         }
     }
@@ -264,7 +264,7 @@ function mobilize_america_events_shortcode( $atts ) {
             if($atts['show_description'] == 'true'){
                  $output .= '<div class="event-description">' . wp_kses_post( $event['description'] ) . '</div>';
             }
-            $output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Sign Up', 'mobilize-america-events' ) . '</a>';
+            $output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Sign Up', 'mobilizeamerica-shortcode' ) . '</a>';
             $output .= '</div>';
         }
     }

@@ -3,7 +3,7 @@
  * Plugin Name: Mobilize America Events
  * Plugin URI:  https://github.com/sflwa/Mobilize-WordPress/
  * Description: Displays events from Mobilize America on your WordPress site.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      South Florida Web Advisors
  * Author URI:  https://sflwa.net
  * License:     GPL2

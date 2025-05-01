@@ -1,4 +1,4 @@
-# Mobilize-WordPress
+# MobilizeAmerica Shortcode 
 WordPress Plugin to display events from Mobilize.us with a shortcode
 
 This plugin was generated using Google Gemini

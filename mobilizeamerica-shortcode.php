@@ -8,7 +8,7 @@
  * Author URI:  https://sflwa.net
  * License:     GPL2
  * Text Domain: mobilizeamerica-shortcode
- * Domain Path: /languages
+
  */
 
 // Prevent direct access to the plugin file.

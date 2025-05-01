@@ -18,6 +18,9 @@ This plugin was generated using Google Gemini
 
 ## Change Log
 
+2025-05-01 v1.0.3
+* WordPress Plugin Header Standards
+
 2025-05-01 v1.0.2
 * Update name & files to match WordPress Standards
 

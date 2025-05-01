@@ -85,6 +85,7 @@ class Mobilize_America_API {
             if (isset($data['errors']) && is_array($data['errors'])) {
                 $error_message = implode(", ", $data['errors']); // Combine errors into a single string
             } else {
+		/* translators: 1: Error code returned from API. */    
                 $error_message = sprintf( __( 'Mobilize America API returned an error: %d', 'mobilizeamerica-shortcode' ), $response_code );
             }
 			return new WP_Error( 'api_error', $error_message, $data );
@@ -121,7 +122,8 @@ class Mobilize_America_API {
              if (isset($data['errors']) && is_array($data['errors'])) {
                 $error_message = implode(", ", $data['errors']); // Combine errors into a single string
             } else {
-                $error_message = sprintf( __( 'Mobilize America API returned an error: %d', 'mobilizeamerica-shortcode' ), $response_code );
+                /* translators: 1: Error code returned from API. */
+		$error_message = sprintf( __( 'Mobilize America API returned an error: %d', 'mobilizeamerica-shortcode' ), $response_code );
             }
 			return new WP_Error( 'api_error', $error_message, $data );
 		}
@@ -223,8 +225,8 @@ function mobilize_america_events_shortcode( $atts ) {
         foreach ( $events as $event ) {
             // Format the timeslot start date and time.
             $start_time = $event['timeslots'][0]['start_date'] ; //get first timeslot
-            $formatted_date = date( "D, F j, Y", $start_time  );
-            $formatted_time = date( "g:i a", $start_time );
+            $formatted_date = gmdate( "D, F j, Y", $start_time  );
+            $formatted_time = gmdate( "g:i a", $start_time );
 
             $event_url = isset($event['browser_url']) ? esc_url( $event['browser_url'] ) : '#';
 

@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Mobilize America Events
- * Plugin URI:  https://github.com/sflwa/Mobilize-WordPress/
+ * Plugin Name: MobilizeAmerica Shortcode
+ * Plugin URI:  https://github.com/sflwa/mobilizeamerica-shortcode/
  * Description: Displays events from Mobilize America on your WordPress site.
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      South Florida Web Advisors
  * Author URI:  https://sflwa.net
  * License:     GPL2
- * Text Domain: mobilize-america-events
+ * Text Domain: mobilizeamerica-shortcode
  * Domain Path: /languages
  */
 

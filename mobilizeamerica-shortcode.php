@@ -278,3 +278,21 @@ function mobilize_america_events_shortcode( $atts ) {
 	return $output;
 }
 add_shortcode( 'mobilize_america_events', 'mobilize_america_events_shortcode' );
+
+
+// Check if Elementor is installed before hooking into it.
+if ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '1.0.0', '>=' ) ) {
+	add_action( 'elementor/init', 'register_mobilizeamerica_shortcode_widget' );
+}
+
+/**
+ * Register the Mobilize America Events widget for Elementor.
+ */
+function register_mobilize_america_widget() {
+	// Include the widget class file.
+	require_once( __DIR__ . '/includes/elementor-widget.php' );
+
+	// Register the widget.
+	\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new \Elementor\Widget_MobilizeAmerica_Shortcode() );
+}
+

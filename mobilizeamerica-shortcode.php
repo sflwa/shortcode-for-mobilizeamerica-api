@@ -227,8 +227,7 @@ function mobilize_america_events_shortcode( $atts ) {
     if ( file_exists( $template_path ) ) {
         include $template_path;
     } else {
-        error_log( 'Template file not found: ' . $template_path );
-        return '<div class="mobilize-america-error">' . esc_html__( 'Error: Template file missing.', 'mobilize-america-events' ) . '</div>';
+        return '<div class="mobilize-america-error">' . esc_html__( 'Error: Template file missing.', 'mobilizeamerica-shortcode' ) . '</div>';
     }
 
     $output .= mobilize_america_get_template( $events, $atts['template'] );

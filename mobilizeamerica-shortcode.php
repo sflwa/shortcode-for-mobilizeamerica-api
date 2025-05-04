@@ -3,13 +3,13 @@
  * Plugin Name: MobilizeAmerica Shortcode
  * Plugin URI:  https://github.com/sflwa/mobilizeamerica-shortcode/
  * Description: Displays events from Mobilize America on your WordPress site.
- * Version:     1.0.4
+ * Version:     1.0.5
  * Author:      South Florida Web Advisors
  * Author URI:  https://sflwa.net
  * License: GPLv2 or later
  * Requires at least: 6.7
- * Tested up to: 6.8.1
- * Stable tag: 1.0.4
+ * Tested up to: 6.8
+ * Stable tag: 1.0.5
  * Text Domain: mobilizeamerica-shortcode
 
  */
@@ -147,14 +147,15 @@ function mobilize_america_events_shortcode( $atts ) {
 		'organization_id' => '', // Organization ID is now required.
 		'timeslot_start'  => '', // ISO8601 date-time string
 		'timeslot_end'    => '', // ISO8601 date-time string
-        	'event_type'      => '', // event type
-            	'zipcode'         => '', // zipcode
-            	'radius'          => '', // radius
+        'event_type'      => '', // event type
+        'zipcode'         => '', // zipcode
+        'radius'          => '', // radius
 		'limit'           => 15,    // Maximum number of events to display.
 		'template'        => 'default', //Which template to use
-            	'event_id'        => '', //show a single event,
-            	'show_description' => 'true', //show description
+        'event_id'        => '', //show a single event,
+        'show_description' => 'true', //show description
 		'is_virtual' 	  => '', // Virtual Only - blank is all
+		'columns'         => '3', // Number of columns for card template
 		),
 		$atts,
 		'mobilize_america_events'
@@ -215,67 +216,26 @@ function mobilize_america_events_shortcode( $atts ) {
 		return '<div class="mobilize-america-no-events">' . esc_html__( 'No events found.', 'mobilizeamerica-shortcode' ) . '</div>';
 	}
 
-	$output = '<div class="mobilizeamerica-shortcode-wrapper">';
+	$output = '<div class="mobilize-america-events-wrapper columns-' . intval($atts['columns']) . '">';
 
     // Include CSS file.
     wp_enqueue_style( 'mobilizeamerica-shortcode-styles', plugin_dir_url( __FILE__ ) . 'css/mobilizeamerica-shortcode.css', array(), '1.0.0' );
 
 
-    if ($atts['template'] == 'card') {
-        foreach ( $events as $event ) {
-            // Format the timeslot start date and time.
-            $start_time = $event['timeslots'][0]['start_date'] ; //get first timeslot
-            $formatted_date = gmdate( "D, F j, Y", $start_time  );
-            $formatted_time = gmdate( "g:i a", $start_time );
-
-            $event_url = isset($event['browser_url']) ? esc_url( $event['browser_url'] ) : '#';
-
-            $output .= '<div class="event-card">';
-            $output .= '<h3 class="event-title"><a href="' . $event_url . '" target="_blank" rel="noopener noreferrer">' . esc_html( $event['title'] ) . '</a></h3>';
-            $output .= '<p class="event-date">' . esc_html( $formatted_date ) . '</p>';
-         // $output .= '<p class="event-date">' . esc_html( $formatted_date ) . ' ' . esc_html( $formatted_time ) . '</p>';  
-            
-
-            if (isset($event['featured_image_url']) && !empty($event['featured_image_url'])) {
-                 $output .= '<div class="event-image">';
-                 $output .= '<img src="' . esc_url( $event['featured_image_url'] ) . '" alt="' . esc_attr( $event['title'] ) . '">';
-                 $output .= '</div>';
-            }
-
-            if($atts['show_description'] == 'true'){
-                $output .= '<div class="event-description">' . wp_kses_post( $event['description'] ) . '</div>';
-            }
-
-          //  $output .= '<p class="event-location">' . esc_html( $event['location']['venue_name'] ) . ', ' . esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] ) . '</p>';
-            $output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here for more information', 'mobilizeamerica-shortcode' ) . '</a>';
-            $output .= '</div>'; // Close event-card
-        }
+    // Include template file
+    $template_path = plugin_dir_path( __FILE__ ) . 'templates/event-templates.php';
+    if ( file_exists( $template_path ) ) {
+        include $template_path;
+    } else {
+        error_log( 'Template file not found: ' . $template_path );
+        return '<div class="mobilize-america-error">' . esc_html__( 'Error: Template file missing.', 'mobilize-america-events' ) . '</div>';
     }
-    else { //default template
-        foreach ( $events as $event ) {
-            // Format the timeslot start date and time.
-            $start_time = strtotime( $event['timeslots'][0]['start_date'] );  //get first timeslot.
-            $formatted_date = date_i18n( get_option( 'date_format' ), $start_time );
-            $formatted_time = date_i18n( get_option( 'time_format' ), $start_time );
 
-             $event_url = isset($event['browser_url']) ? esc_url( $event['browser_url'] ) : '#';
-
-            $output .= '<div class="event-item">';
-            $output .= '<h3 class="event-title"><a href="' . $event_url . '" target="_blank" rel="noopener noreferrer">' . esc_html( $event['title'] ) . '</a></h3>';
-            $output .= '<p class="event-date">' . esc_html( $formatted_date ) . '</p>';
-         // $output .= '<p class="event-date">' . esc_html( $formatted_date ) . ' ' . esc_html( $formatted_time ) . '</p>';  
-            
-            $output .= '<p class="event-location">' . esc_html( $event['location']['venue_name'] ) . ', ' . esc_html( $event['locality'] ) . ', ' . esc_html( $event['location']['region'] ) . '</p>';
-            if($atts['show_description'] == 'true'){
-                 $output .= '<div class="event-description">' . wp_kses_post( $event['description'] ) . '</div>';
-            }
-            $output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Sign Up', 'mobilizeamerica-shortcode' ) . '</a>';
-            $output .= '</div>';
-        }
-    }
+    $output .= mobilize_america_get_template( $events, $atts['template'] );
 	$output .= '</div>'; // Close events-wrapper
 
 	return $output;
+
 }
 add_shortcode( 'mobilize_america_events', 'mobilize_america_events_shortcode' );
 

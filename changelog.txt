@@ -1,0 +1,13 @@
+2025-05-03 v1.0.4
+* Added Elementor Widget
+
+2025-05-01 v1.0.3
+* WordPress Plugin Header Standards
+
+2025-05-01 v1.0.2
+* Update name & files to match WordPress Standards
+
+2025-05-01 v1.0.1
+* Added "is_virutal" to Shortcode
+
+2025-04-28 - v1.0.0 - Intial Release

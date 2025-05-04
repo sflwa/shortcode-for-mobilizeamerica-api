@@ -10,37 +10,40 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-/**
- * Get the HTML for displaying events based on the specified template.
- *
- * @param array  $events  Array of event data.
- * @param string $template The template to use (default or card).
- * @param int    $columns Number of columns for card template.
- * @return string HTML output for the events.
- */
-function mobilize_america_get_template( $events, $template = 'default', $columns = 3 ) {
-	$output = '';
-    $columns_class = 'columns-' . intval( $columns ); //sanitize
+if ( ! function_exists( 'mobilize_america_get_template' ) ) {
+	/**
+	 * Get the HTML for displaying events based on the specified template.
+	 *
+	 * @param array  $events  Array of event data.
+	 * @param string $template The template to use (default or card).
+	 * @param int    $columns Number of columns for card template.
+	 * @return string HTML output for the events.
+	 */
+	function mobilize_america_get_template( $events, $template = 'default', $columns = 3 ) {
+		$output = '';
+		$columns_class = 'columns-' . intval( $columns ); //sanitize
 
-	if ( $template == 'card' ) {
-		//$output .= '<div class="mobilize-america-events-wrapper ' . esc_attr( $columns_class ) . '">'; // Added the column class to the wrapper
-		$output .= mobilize_america_get_card_template( $events, $columns ); // Pass $columns to the card template function
-		$output .= '</div>';
-	} else {
-		$output .= '<div class="mobilize-america-events-wrapper">';
-		$output .= mobilize_america_get_default_template( $events );
-		$output .= '</div>';
+		if ( $template == 'card' ) {
+			$output .= '<div class="mobilize-america-events-wrapper ' . esc_attr( $columns_class ) . '">'; // Added the column class to the wrapper
+			$output .= mobilize_america_get_card_template( $events, $columns ); // Pass $columns to the card template function
+			$output .= '</div>';
+		} else {
+			$output .= '<div class="mobilize-america-events-wrapper">';
+			$output .= mobilize_america_get_default_template( $events );
+			$output .= '</div>';
+		}
+
+		return $output;
 	}
-
-	return $output;
 }
 
-/**
- * Get the HTML for displaying events using the default template.
- *
- * @param array $events Array of event data.
- * @return string HTML output for the events.
- */
+if ( ! function_exists( 'mobilize_america_get_default_template' ) ) {
+	/**
+	 * Get the HTML for displaying events using the default template.
+	 *
+	 * @param array $events Array of event data.
+	 * @return string HTML output for the events.
+	 */
 function mobilize_america_get_default_template( $events ) {
 	$output = '';
 	foreach ( $events as $event ) {
@@ -62,14 +65,16 @@ function mobilize_america_get_default_template( $events ) {
 	}
 	return $output;
 }
+}
 
-/**
- * Get the HTML for displaying events using the card template.
- *
- * @param array $events Array of event data.
- * @param int $columns Number of columns
- * @return string HTML output for the events.
- */
+if ( ! function_exists( 'mobilize_america_get_card_template' ) ) {
+	/**
+	 * Get the HTML for displaying events using the card template.
+	 *
+	 * @param array $events Array of event data.
+	 * @param int $columns Number of columns
+	 * @return string HTML output for the events.
+	 */
 function mobilize_america_get_card_template( $events, $columns ) {
 	$output = '';
 	foreach ( $events as $event ) {
@@ -101,4 +106,5 @@ function mobilize_america_get_card_template( $events, $columns ) {
             $output .= '</div>'; // Close event-card
         }
 	return $output;
+}
 }

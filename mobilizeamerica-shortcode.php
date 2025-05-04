@@ -240,7 +240,7 @@ add_shortcode( 'mobilize_america_events', 'mobilize_america_events_shortcode' );
 
 // Check if Elementor is installed before hooking into it.
 if ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '1.0.0', '>=' ) ) {
-	add_action( 'elementor/init', 'register_mobilize_america_widget' );
+	add_action( 'elementor/widgets/widgets_registered', 'register_mobilize_america_widget' );
 }
 
 /**

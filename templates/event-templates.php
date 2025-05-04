@@ -57,7 +57,7 @@ function mobilize_america_get_default_template( $events ) {
 		if ( isset( $event['description'] ) ) {
 			$output .= '<div class="event-description">' . wp_kses_post( $event['description'] ) . '</div>';
 		}
-		$output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Sign Up', 'mobilize-america-events' ) . '</a>';
+		$output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Sign Up', 'mobilizeamerica-shortcode' ) . '</a>';
 		$output .= '</div>';
 	}
 	return $output;

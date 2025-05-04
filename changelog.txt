@@ -1,3 +1,8 @@
+2025-05-03 v1.0.5
+* Moved Template Code to separate file
+* Added column feature to card template
+* Checked Plugin to WordPress Standards
+
 2025-05-03 v1.0.4
 * Added Elementor Widget
 

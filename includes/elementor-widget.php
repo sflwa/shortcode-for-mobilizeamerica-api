@@ -482,7 +482,7 @@ class Widget_Mobilize_America_Events extends \Elementor\Widget_Base {
             }
             else
             {
-                echo $mobilizeshortcode;
+                echo wp_kses_post($mobilizeshortcode);
             }
 
 		} catch (Exception $e) {

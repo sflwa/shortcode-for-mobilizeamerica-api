@@ -1,6 +1,6 @@
 <?php
 /**
- * Mobilize America Events - Template Functions
+ * Shortcode for Mobilize America API - Template Functions
  *
  * This file contains the functions that generate the HTML for displaying events
  * in different formats.
@@ -17,21 +17,22 @@ if ( ! function_exists( 'mobilize_america_get_template' ) ) {
 	 * @param array  $events  Array of event data.
 	 * @param string $template The template to use (default or card).
 	 * @param int    $columns Number of columns for card template.
+	 * @param bool   $show_description
 	 * @return string HTML output for the events.
 	 */
-	function mobilize_america_get_template( $events, $template = 'default', $columns = 3 ) {
+	function mobilize_america_get_template( $events, $template = 'default', $columns = 3, $show_description = true ) {
 		$output = '';
 		$columns_class = 'columns-' . intval( $columns ); //sanitize
 
 		if ( $template == 'card' ) {
-			$output .= '<div class="mobilize-america-events-wrapper ' . esc_attr( $columns_class ) . '">'; // Added the column class to the wrapper
-			$output .= mobilize_america_get_card_template( $events, $columns ); // Pass $columns to the card template function
-			$output .= '</div>';
+			$output .= mobilize_america_get_card_template( $events, $columns, $show_description ); // Pass $columns to the card template function
+		
 		} else {
 			$output .= '<div class="mobilize-america-events-wrapper">';
-			$output .= mobilize_america_get_default_template( $events );
+			$output .= mobilize_america_get_default_template( $events, $show_description );
 			$output .= '</div>';
 		}
+			
 
 		return $output;
 	}
@@ -42,9 +43,10 @@ if ( ! function_exists( 'mobilize_america_get_default_template' ) ) {
 	 * Get the HTML for displaying events using the default template.
 	 *
 	 * @param array $events Array of event data.
+	 * @param bool $show_description
 	 * @return string HTML output for the events.
 	 */
-function mobilize_america_get_default_template( $events ) {
+function mobilize_america_get_default_template( $events, $show_description ) {
 	$output = '';
 	foreach ( $events as $event ) {
 		// Format the timeslot start date and time.
@@ -56,11 +58,11 @@ function mobilize_america_get_default_template( $events ) {
 		$output .= '<div class="event-item">';
 		$output .= '<h3 class="event-title"><a href="' . $event_url . '" target="_blank" rel="noopener noreferrer">' . esc_html( $event['title'] ) . '</a></h3>';
 		$output .= '<p class="event-date">' . ($start_time ? esc_html( $formatted_date ) . ' ' . esc_html( $formatted_time ) : '') . '</p>';
-		$output .= '<p class="event-location">' . esc_html( $event['location']['venue_name'] ) . ', ' . esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] ) . '</p>';
-		if ( isset( $event['description'] ) ) {
+		$output .= '<p class="event-location">' ./* esc_html( $event['location']['venue_name'] ) . ', ' . */ esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] ) . '</p>';
+		  if ( $show_description === true && isset( $event['description'] ) ) {
 			$output .= '<div class="event-description">' . wp_kses_post( $event['description'] ) . '</div>';
 		}
-		$output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Sign Up', 'mobilizeamerica-shortcode' ) . '</a>';
+		$output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Sign Up', 'shortcode-for-mobilizeamerica-api' ) . '</a>';
 		$output .= '</div>';
 	}
 	return $output;
@@ -73,9 +75,10 @@ if ( ! function_exists( 'mobilize_america_get_card_template' ) ) {
 	 *
 	 * @param array $events Array of event data.
 	 * @param int $columns Number of columns
+	 * @param bool $show_description
 	 * @return string HTML output for the events.
 	 */
-function mobilize_america_get_card_template( $events, $columns ) {
+function mobilize_america_get_card_template( $events, $columns, $show_description ) {
 	$output = '';
 	foreach ( $events as $event ) {
             // Format the timeslot start date and time.
@@ -97,12 +100,13 @@ function mobilize_america_get_card_template( $events, $columns ) {
                  $output .= '</div>';
             }
 
-            if($atts['show_description'] == 'true'){
-                $output .= '<div class="event-description">' . wp_kses_post( $event['description'] ) . '</div>';
-            }
+         if ( $show_description === true && isset( $event['description'] ) ) {
+				$output .= '<div class="event-description">' . wp_kses_post( $event['description'] ) . '</div>';
+			}
+
 
           //  $output .= '<p class="event-location">' . esc_html( $event['location']['venue_name'] ) . ', ' . esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] ) . '</p>';
-            $output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here for more information', 'mobilizeamerica-shortcode' ) . '</a>';
+            $output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here for more information', 'shortcode-for-mobilizeamerica-api' ) . '</a>';
             $output .= '</div>'; // Close event-card
         }
 	return $output;

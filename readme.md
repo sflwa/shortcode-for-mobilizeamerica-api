@@ -3,7 +3,7 @@ Contributors: sflwa
 Tags: shortcode, api
 Requires at least: 6.7
 Tested up to: 6.8
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 Requires PHP: 8.0
 License: GPLv2 or later
 A shortcode to display events from Mobilize.us with and an Elementor Widget.
@@ -65,12 +65,19 @@ Display virtual events in 2 columns:
 
 
 ## Planed Features
-* Adjust CSS for Default Template vs Card Template
-* Add / Fix Timezone offset
-* Truncate Description for Card Template
+* Truncate Description 
 * Fix Elementor Widget Style settings 
-* Single Event Display
+* Map Link for Address
+* Remove Default & Card Layout for single layout - future feature of custom layout
+
+## Future Feature Ideas
 * Block to output shortcode content
+* Single Event Display
+* Custom Layout in uploads directory 
+* UI for custom layout inside wordpress
+* Map Layout of events
+* Events stored locally in database to allow for better search / filtering 
+
 
 == Screenshots ==
 1. Sample Output of 3 Column Card Template without Descriptions
@@ -78,6 +85,12 @@ Display virtual events in 2 columns:
 
 
 ## Change Log
+2025-05-19 v1.0.9
+* Added Location to output 
+* Added time to output - adjusted output to local time based on WordPress timezone
+* Added Sponsor Name / Link
+
+
 2025-05-11 v1.0.8
 * Added API Information to Readme
 * Adjusted prefix per WordPress standards

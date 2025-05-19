@@ -50,15 +50,36 @@ function mobilize_america_get_default_template( $events, $show_description ) {
 	$output = '';
 	foreach ( $events as $event ) {
 		// Format the timeslot start date and time.
-        $start_time = isset($event['timeslots'][0]['start_date']) ? strtotime( $event['timeslots'][0]['start_date'] ) : false;
-        $formatted_date = $start_time ? date_i18n( get_option( 'date_format' ), $start_time ) : '';
-        $formatted_time = $start_time ? date_i18n( get_option( 'time_format' ), $start_time ) : '';
-        $event_url = isset($event['browser_url']) ? esc_url( $event['browser_url'] ) : '#';
+        $event_start_datetime = New DateTime("@".$event['timeslots'][0]['start_date']);
+		$event_start_datetime->setTimeZone(new DateTimeZone(get_option('gmt_offset')));
+	    $event_end_datetime = New DateTime("@".$event['timeslots'][0]['end_date']);
+		$event_end_datetime->setTimeZone(new DateTimeZone(get_option('gmt_offset')));
+		$event_duration = strtotime($event_end_datetime->format('m/d/Y g:i A')) - strtotime($event_start_datetime->format('m/d/Y g:i A'));
+
+
+		$event_url = isset($event['browser_url']) ? esc_url( $event['browser_url'] ) : '#';
 
 		$output .= '<div class="event-item">';
 		$output .= '<h3 class="event-title"><a href="' . $event_url . '" target="_blank" rel="noopener noreferrer">' . esc_html( $event['title'] ) . '</a></h3>';
-		$output .= '<p class="event-date">' . ($start_time ? esc_html( $formatted_date ) . ' ' . esc_html( $formatted_time ) : '') . '</p>';
-		$output .= '<p class="event-location">' ./* esc_html( $event['location']['venue_name'] ) . ', ' . */ esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] ) . '</p>';
+
+  if ($event_duration == 86340) {$output .= '<p class="event-date">All Day Event</p>';}
+     else{
+
+		$output .= '<p class="event-date">' . $event_start_datetime->format('m/d/Y g:i A') . ' - '.$event_end_datetime->format('g:i A')  . '</p>';
+		}
+      
+		$output .= '<p class="event-location">';
+            if ($event['is_virtual']) {
+                $output .= esc_html__( 'Online Event', 'shortcode-for-mobilizeamerica-api' );
+            } else {
+                 $output .= esc_html( $event['location']['venue'] ) .  '<br />' . esc_html( $event['location']['address_lines'][0] ) . '<br />' .   esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] );
+            }
+		$output .='</p>';
+		
+		
+		
+		
+		#$output .= '<p class="event-location">' . esc_html( $event['location']['venue'] ) . '<br />' .  esc_html( $event['location']['address_lines'][0] ) . '<br />' .  esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] ) . '</p>';
 		  if ( $show_description === true && isset( $event['description'] ) ) {
 			$output .= '<div class="event-description">' . wp_kses_post( $event['description'] ) . '</div>';
 		}
@@ -82,17 +103,22 @@ function mobilize_america_get_card_template( $events, $columns, $show_descriptio
 	$output = '';
 	foreach ( $events as $event ) {
             // Format the timeslot start date and time.
-            $start_time = $event['timeslots'][0]['start_date'] ; //get first timeslot
-            $formatted_date = gmdate( "D, F j, Y", $start_time  );
-            $formatted_time = gmdate( "g:i a", $start_time );
+            $event_start_datetime = New DateTime("@".$event['timeslots'][0]['start_date']);
+		$event_start_datetime->setTimeZone(new DateTimeZone(get_option('gmt_offset')));
+	    $event_end_datetime = New DateTime("@".$event['timeslots'][0]['end_date']);
+		$event_end_datetime->setTimeZone(new DateTimeZone(get_option('gmt_offset')));
+		$event_duration = strtotime($event_end_datetime->format('m/d/Y g:i A')) - strtotime($event_start_datetime->format('m/d/Y g:i A'));
+
 
             $event_url = isset($event['browser_url']) ? esc_url( $event['browser_url'] ) : '#';
 
             $output .= '<div class="event-card">';
             $output .= '<h3 class="event-title"><a href="' . $event_url . '" target="_blank" rel="noopener noreferrer">' . esc_html( $event['title'] ) . '</a></h3>';
-            $output .= '<p class="event-date">' . esc_html( $formatted_date ) . '</p>';
-            #$output .= '<p class="event-date">' . esc_html( $formatted_date ) . ' ' . esc_html( $formatted_time ) . '</p>';  
-            
+           if ($event_duration == 86340) {$output .= '<p class="event-date">All Day Event</p>';}
+     else{
+
+		$output .= '<p class="event-date">' . $event_start_datetime->format('m/d/Y g:i A') . ' - '.$event_end_datetime->format('g:i A')  . '</p>';
+		}
 
             if (isset($event['featured_image_url']) && !empty($event['featured_image_url'])) {
                  $output .= '<div class="event-image">';
@@ -105,9 +131,24 @@ function mobilize_america_get_card_template( $events, $columns, $show_descriptio
 			}
 
 
-          //  $output .= '<p class="event-location">' . esc_html( $event['location']['venue_name'] ) . ', ' . esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] ) . '</p>';
+           $output .= '<p class="event-location">';
+            if ($event['is_virtual']) {
+                $output .= esc_html__( 'Online Event', 'shortcode-for-mobilizeamerica-api' );
+            } else {
+                 $output .= esc_html( $event['location']['venue'] ) .  '<br />' . esc_html( $event['location']['address_lines'][0] ) . '<br />'  . esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] );
+            }
+             $output .='</p>';
+
+            $output .= '<p><strong>Sponsor:</strong> <a href="' . $event['sponsor']['event_feed_url'] . '" target="_blank" style="text-decoration:none;">' . $event['sponsor']['name'] . '</a></p>';
+
+          
             $output .= '<a href="' . $event_url . '" class="event-link" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Click here for more information', 'shortcode-for-mobilizeamerica-api' ) . '</a>';
-            $output .= '</div>'; // Close event-card
+            
+			
+			
+			
+			
+			$output .= '</div>'; // Close event-card
         }
 	return $output;
 }

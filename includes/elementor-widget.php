@@ -1,6 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+    exit; // Exit if accessed directly.
 }
 
 /**
@@ -8,143 +8,158 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class scfmaapi_Widget_Mobilize_America_Events extends \Elementor\Widget_Base {
 
-	/**
-	 * Get widget name.
-	 *
-	 * @return string Widget name.
-	 */
-	public function get_name() {
-		return 'mobilize_america_events';
-	}
+    /**
+     * Get widget name.
+     *
+     * @return string Widget name.
+     */
+    public function get_name() {
+        return 'mobilize_america_events';
+    }
 
-	/**
-	 * Get widget title.
-	 *
-	 * @return string Widget title.
-	 */
-	public function get_title() {
-		return esc_html__( 'Mobilize America Events', 'shortcode-for-mobilizeamerica-api' );
-	}
+    /**
+     * Get widget title.
+     *
+     * @return string Widget title.
+     */
+    public function get_title() {
+        return esc_html__( 'Mobilize America Events', 'shortcode-for-mobilizeamerica-api' );
+    }
 
-	/**
-	 * Get widget icon.
-	 *
-	 * @return string Widget icon.
-	 */
-	public function get_icon() {
-		return 'eicon-calendar'; // You can use any Elementor icon class.
-	}
+    /**
+     * Get widget icon.
+     *
+     * @return string Widget icon.
+     */
+    public function get_icon() {
+        return 'eicon-calendar'; // You can use any Elementor icon class.
+    }
 
-	/**
-	 * Get widget categories.
-	 *
-	 * @return array List of categories the widget belongs to.
-	 */
-	public function get_categories() {
-		return [ 'basic' ]; // Or any other category you prefer.
-	}
+    /**
+     * Get widget categories.
+     *
+     * @return array List of categories the widget belongs to.
+     */
+    public function get_categories() {
+        return [ 'basic' ]; // Or any other category you prefer.
+    }
 
-	/**
-	 * Get widget keywords.
-	 *
-	 * @return array List of keywords the widget belongs to.
-	 */
-	public function get_keywords() {
-		return [ 'mobilize', 'events', 'america', 'shortcode' ];
-	}
+    /**
+     * Get widget keywords.
+     *
+     * @return array List of keywords the widget belongs to.
+     */
+    public function get_keywords() {
+        return [ 'mobilize', 'events', 'america', 'shortcode' ];
+    }
 
-	/**
-	 * Register widget controls.
-	 *
-	 * Adds different input fields to allow the user to customize the widget settings.
-	 */
-	protected function _register_controls() {
-		$this->start_controls_section(
-			'content_section',
-			[
-				'label' => esc_html__( 'Content', 'shortcode-for-mobilizeamerica-api' ),
-				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
-			]
-		);
-
-		$this->add_control(
-			'organization_id',
-			[
-				'label' => esc_html__( 'Organization ID', 'shortcode-for-mobilizeamerica-api' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'required' => true,
-				'description' => esc_html__( 'Enter your Mobilize America Organization ID.', 'shortcode-for-mobilizeamerica-api' ),
-			]
-		);
-
-		$this->add_control(
-			'timeslot_start',
-			[
-				'label' => esc_html__( 'Timeslot Start', 'shortcode-for-mobilizeamerica-api' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter the start date/time for events (ISO8601 format).', 'shortcode-for-mobilizeamerica-api' ),
-			]
-		);
-
-		$this->add_control(
-			'timeslot_end',
-			[
-				'label' => esc_html__( 'Timeslot End', 'shortcode-for-mobilizeamerica-api' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter the end date/time for events (ISO8601 format).', 'shortcode-for-mobilizeamerica-api' ),
-			]
-		);
+    /**
+     * Register widget controls.
+     *
+     * Adds different input fields to allow the user to customize the widget settings.
+     */
+    protected function _register_controls() {
+        $this->start_controls_section(
+            'content_section',
+            [
+                'label' => esc_html__( 'Content', 'shortcode-for-mobilizeamerica-api' ),
+                'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
 
         $this->add_control(
-			'event_type',
-			[
-				'label' => esc_html__( 'Event Type', 'shortcode-for-mobilizeamerica-api' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter the event type.', 'shortcode-for-mobilizeamerica-api' ),
-			]
-		);
+            'organization_id',
+            [
+                'label' => esc_html__( 'Organization ID', 'shortcode-for-mobilizeamerica-api' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'required' => true,
+                'description' => esc_html__( 'Enter your Mobilize America Organization ID.', 'shortcode-for-mobilizeamerica-api' ),
+            ]
+        );
+
+        // New control: organization_only
+        $this->add_control(
+            'organization_only',
+            [
+                'label' => esc_html__( 'Organization Only', 'shortcode-for-mobilizeamerica-api' ), // Changed label
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'no',
+                'options' => [
+                    'yes' => esc_html__( 'Yes', 'shortcode-for-mobilizeamerica-api' ), // Simplified option
+                    'no' => esc_html__( 'No', 'shortcode-for-mobilizeamerica-api' ),   // Simplified option
+                ],
+                'description' => esc_html__( 'Only show organization events without promoted events', 'shortcode-for-mobilizeamerica-api' ), // Changed description
+            ]
+        );
 
         $this->add_control(
-			'zipcode',
-			[
-				'label' => esc_html__( 'Zipcode', 'shortcode-for-mobilizeamerica-api' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter the zipcode.', 'shortcode-for-mobilizeamerica-api' ),
-			]
-		);
+            'timeslot_start',
+            [
+                'label' => esc_html__( 'Timeslot Start', 'shortcode-for-mobilizeamerica-api' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'description' => esc_html__( 'Enter the start date/time for events (ISO8601 format).', 'shortcode-for-mobilizeamerica-api' ),
+            ]
+        );
 
         $this->add_control(
-			'radius',
-			[
-				'label' => esc_html__( 'Radius', 'shortcode-for-mobilizeamerica-api' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter the radius.', 'shortcode-for-mobilizeamerica-api' ),
-			]
-		);
+            'timeslot_end',
+            [
+                'label' => esc_html__( 'Timeslot End', 'shortcode-for-mobilizeamerica-api' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'description' => esc_html__( 'Enter the end date/time for events (ISO8601 format).', 'shortcode-for-mobilizeamerica-api' ),
+            ]
+        );
 
-		$this->add_control(
-			'limit',
-			[
-				'label' => esc_html__( 'Limit', 'shortcode-for-mobilizeamerica-api' ),
-				'type' => \Elementor\Controls_Manager::NUMBER,
-				'default' => 10,
-				'description' => esc_html__( 'Maximum number of events to display.', 'shortcode-for-mobilizeamerica-api' ),
-			]
-		);
+        $this->add_control(
+            'event_type',
+            [
+                'label' => esc_html__( 'Event Type', 'shortcode-for-mobilizeamerica-api' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'description' => esc_html__( 'Enter the event type.', 'shortcode-for-mobilizeamerica-api' ),
+            ]
+        );
 
-		$this->add_control(
-			'template',
-			[
-				'label' => esc_html__( 'Template', 'shortcode-for-mobilizeamerica-api' ),
-				'type' => \Elementor\Controls_Manager::SELECT,
-				'default' => 'default',
-				'options' => [
-					'default' => esc_html__( 'Default', 'shortcode-for-mobilizeamerica-api' ),
-					'card' => esc_html__( 'Card', 'shortcode-for-mobilizeamerica-api' ),
-				],
-				'description' => esc_html__( 'Choose a template for displaying events.', 'shortcode-for-mobilizeamerica-api' ),
-			]
-		);
+        $this->add_control(
+            'zipcode',
+            [
+                'label' => esc_html__( 'Zipcode', 'shortcode-for-mobilizeamerica-api' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'description' => esc_html__( 'Enter the zipcode.', 'shortcode-for-mobilizeamerica-api' ),
+            ]
+        );
+
+        $this->add_control(
+            'radius',
+            [
+                'label' => esc_html__( 'Radius', 'shortcode-for-mobilizeamerica-api' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'description' => esc_html__( 'Enter the radius.', 'shortcode-for-mobilizeamerica-api' ),
+            ]
+        );
+
+        $this->add_control(
+            'limit',
+            [
+                'label' => esc_html__( 'Limit', 'shortcode-for-mobilizeamerica-api' ),
+                'type' => \Elementor\Controls_Manager::NUMBER,
+                'default' => 10,
+                'description' => esc_html__( 'Maximum number of events to display.', 'shortcode-for-mobilizeamerica-api' ),
+            ]
+        );
+
+        $this->add_control(
+            'template',
+            [
+                'label' => esc_html__( 'Template', 'shortcode-for-mobilizeamerica-api' ),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'default',
+                'options' => [
+                    'default' => esc_html__( 'Default', 'shortcode-for-mobilizeamerica-api' ),
+                    'card' => esc_html__( 'Card', 'shortcode-for-mobilizeamerica-api' ),
+                ],
+                'description' => esc_html__( 'Choose a template for displaying events.', 'shortcode-for-mobilizeamerica-api' ),
+            ]
+        );
 
         $this->add_control(
             'event_id',
@@ -203,7 +218,17 @@ class scfmaapi_Widget_Mobilize_America_Events extends \Elementor\Widget_Base {
             ]
         );
 
-		$this->end_controls_section();
+        $this->add_control(
+            'tag_id',
+            [
+                'label' => esc_html__( 'Tag ID', 'shortcode-for-mobilizeamerica-api' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'description' => esc_html__( 'Enter a Mobilize America Tag ID to filter events.', 'shortcode-for-mobilizeamerica-api' ),
+            ]
+        );
+
+
+        $this->end_controls_section();
 
 
 /** ===================================================================================== **/
@@ -276,7 +301,7 @@ $this->start_controls_section(
             ]
         );
 
-       /*  $this->add_group_control(
+       /* $this->add_group_control(
             \Elementor\Group_Control_Background::get_type(),
             [
                 'name' => 'title_background',
@@ -288,7 +313,7 @@ $this->start_controls_section(
             ]
         );*/
 
-      /*  $this->add_control(
+      /* $this->add_control(
             'title_padding',
             [
                 'label' => esc_html__( 'Title Padding', 'shortcode-for-mobilizeamerica-api' ),
@@ -405,24 +430,24 @@ $this->start_controls_section(
         );
 
         $this->end_controls_section(); */
-	}
+    }
 
-	/**
-	 * Render widget output on the frontend.
-	 *
-	 * @return string
-	 */
-	protected function render() {
-		$settings = $this->get_settings_for_display();
+    /**
+     * Render widget output on the frontend.
+     *
+     * @return string
+     */
+    protected function render() {
+        $settings = $this->get_settings_for_display();
 
-		if ( empty( $settings['organization_id'] ) ) {
-			echo '<div class="mobilize-america-error">' . esc_html__( 'Error: Organization ID is required.', 'shortcode-for-mobilizeamerica-api' ) . '</div>';
-			return;
-		}
+        if ( empty( $settings['organization_id'] ) ) {
+            echo '<div class="mobilize-america-error">' . esc_html__( 'Error: Organization ID is required.', 'shortcode-for-mobilizeamerica-api' ) . '</div>';
+            return;
+        }
 
-		$shortcode_atts = [
-			'organization_id' => $settings['organization_id'],
-		];
+        $shortcode_atts = [
+            'organization_id' => $settings['organization_id'],
+        ];
 
         if (!empty($settings['timeslot_start'])) {
             $shortcode_atts['timeslot_start'] = $settings['timeslot_start'];
@@ -458,47 +483,41 @@ $this->start_controls_section(
         if (!empty($settings['columns'])) {
             $shortcode_atts['columns'] = $settings['columns'];
         }
+        if (!empty($settings['tag_id'])) { // Add tag_id to shortcode attributes
+            $shortcode_atts['tag_id'] = $settings['tag_id'];
+        }
+        if (!empty($settings['organization_only'])) { // Add organization_only to shortcode attributes
+            $shortcode_atts['organization_only'] = $settings['organization_only'];
+        }
 
-		try {
-			$shortcode_str = '[mobilize_america_events ';
-            $shortcode_str .= 'organization_id="' . $settings['organization_id'] . '" ';
-            if (!empty($settings['timeslot_start'])) {
-                $shortcode_str .= ' timeslot_start="' . $settings['timeslot_start'] . '" ';
-            }
-            if (!empty($settings['timeslot_end'])) {
-                $shortcode_str .= ' timeslot_end="' . $settings['timeslot_end'] . '" ';
-            }
-             if (!empty($settings['template'])) {
-                $shortcode_str .= ' template="' . $settings['template'] . '" ';
-            }
-            if (!empty($settings['show_description'])) {
-                 $shortcode_str .= ' show_description="' . $settings['show_description'] . '" ';
-            }
-            if (!empty($settings['is_virtual'])) {
-                 $shortcode_str .= ' is_virtual="' . $settings['is_virtual'] . '" ';
-            }
-            if (!empty($settings['columns'])) {
-                 $shortcode_str .= ' columns="' . $settings['columns'] . '" ';
+        try {
+            $shortcode_str = '[mobilize_america_events ';
+            foreach ($shortcode_atts as $key => $value) {
+                // Ensure boolean values are converted to 'true'/'false' strings for the shortcode
+                if (is_bool($value)) {
+                    $value = $value ? 'true' : 'false';
+                }
+                $shortcode_str .= $key . '="' . esc_attr($value) . '" ';
             }
             $shortcode_str .= ']';
 
-			if ( ! is_string( $shortcode_str ) ) {
-				$shortcode_str = '';
-			}
-			
-			$mobilizeshortcode = do_shortcode( $shortcode_str );
+            if ( ! is_string( $shortcode_str ) ) {
+                $shortcode_str = '';
+            }
+            
+            $mobilizeshortcode = do_shortcode( $shortcode_str );
             if (empty($mobilizeshortcode)) {
                 echo '<div class="mobilize-america-error">Shortcode output is empty.  Please check your settings.</div>';
             }
             else
             {
                 echo wp_kses_post($mobilizeshortcode);
-				
+                
             }
 
-		} catch (Exception $e) {
-			echo '<div class="mobilize-america-error">' . esc_html__( 'Error: Shortcode processing failed.', 'shortcode-for-mobilizeamerica-api' ) . '</div>';
-			return;
-		}
-	}
+        } catch (Exception $e) {
+            echo '<div class="mobilize-america-error">' . esc_html__( 'Error: Shortcode processing failed.', 'shortcode-for-mobilizeamerica-api' ) . '</div>';
+            return;
+        }
+    }
 }

@@ -3,7 +3,7 @@ Contributors: sflwa
 Tags: shortcode, api
 Requires at least: 6.7
 Tested up to: 6.8
-Stable tag: 1.0.13
+Stable tag: 1.0.15
 Requires PHP: 8.0
 License: GPLv2 or later
 A shortcode to display events from Mobilize.us with and an Elementor Widget.

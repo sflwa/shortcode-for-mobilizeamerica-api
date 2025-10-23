@@ -111,11 +111,11 @@ class scfmaapi_Widget_Mobilize_America_Events extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
-            'event_type',
+            'event_types', // MODIFIED: event_type -> event_types
             [
-                'label' => esc_html__( 'Event Type', 'shortcode-for-mobilizeamerica-api' ),
+                'label' => esc_html__( 'Event Type(s)', 'shortcode-for-mobilizeamerica-api' ), // MODIFIED: label updated
                 'type' => \Elementor\Controls_Manager::TEXT,
-                'description' => esc_html__( 'Enter the event type.', 'shortcode-for-mobilizeamerica-api' ),
+                'description' => esc_html__( 'Enter the event type(s).', 'shortcode-for-mobilizeamerica-api' ), // MODIFIED: description updated
             ]
         );
 
@@ -455,8 +455,8 @@ $this->start_controls_section(
         if (!empty($settings['timeslot_end'])) {
             $shortcode_atts['timeslot_end'] = $settings['timeslot_end'];
         }
-        if (!empty($settings['event_type'])) {
-            $shortcode_atts['event_type'] = $settings['event_type'];
+        if (!empty($settings['event_types'])) { // MODIFIED: event_type -> event_types
+            $shortcode_atts['event_types'] = $settings['event_types']; // MODIFIED: event_type -> event_types
         }
         if (!empty($settings['zipcode'])) {
             $shortcode_atts['zipcode'] = $settings['zipcode'];

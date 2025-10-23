@@ -18,18 +18,19 @@ if ( ! function_exists( 'mobilize_america_get_template' ) ) {
 	 * @param string $template The template to use (default or card).
 	 * @param int    $columns Number of columns for card template.
 	 * @param bool   $show_description
+     * @param string $event_types Optional event types filter.
 	 * @return string HTML output for the events.
 	 */
-	function mobilize_america_get_template( $events, $template = 'default', $columns = 3, $show_description = true ) {
+	function mobilize_america_get_template( $events, $template = 'default', $columns = 3, $show_description = true, $event_types = '' ) {
 		$output = '';
 		$columns_class = 'columns-' . intval( $columns ); //sanitize
 
 		if ( $template == 'card' ) {
-			$output .= mobilize_america_get_card_template( $events, $columns, $show_description ); // Pass $columns to the card template function
+			$output .= mobilize_america_get_card_template( $events, $columns, $show_description, $event_types ); // Passed $event_types
 		
 		} else {
 			$output .= '<div class="mobilize-america-events-wrapper">';
-			$output .= mobilize_america_get_default_template( $events, $show_description );
+			$output .= mobilize_america_get_default_template( $events, $show_description, $event_types ); // Passed $event_types
 			$output .= '</div>';
 		}
 			
@@ -44,10 +45,13 @@ if ( ! function_exists( 'mobilize_america_get_default_template' ) ) {
 	 *
 	 * @param array $events Array of event data.
 	 * @param bool $show_description
+     * @param string $event_types Optional event types filter.
 	 * @return string HTML output for the events.
 	 */
-function mobilize_america_get_default_template( $events, $show_description ) {
+function mobilize_america_get_default_template( $events, $show_description, $event_types = '' ) {
 	$output = '';
+    $is_interest_form = ( strtoupper( $event_types ) === 'INTEREST_FORM' );
+
 	foreach ( $events as $event ) {
 		// Format the timeslot start date and time.
         $event_start_datetime = New DateTime("@".$event['timeslots'][0]['start_date']);
@@ -62,15 +66,18 @@ function mobilize_america_get_default_template( $events, $show_description ) {
 		$output .= '<div class="event-item">';
 		$output .= '<h3 class="event-title"><a href="' . $event_url . '" target="_blank" rel="noopener noreferrer">' . esc_html( $event['title'] ) . '</a></h3>';
 
-  if ($event_duration == 86340) {$output .= '<p class="event-date">All Day Event</p>';}
-     else{
-
-		$output .= '<p class="event-date">' . $event_start_datetime->format('m/d/Y g:i A') . ' - '.$event_end_datetime->format('g:i A')  . '</p>';
-		}
+    // Conditional Date Display
+    if ( ! $is_interest_form ) {
+        if ($event_duration == 86340) {$output .= '<p class="event-date">All Day Event</p>';}
+        else{
+            $output .= '<p class="event-date">' . $event_start_datetime->format('m/d/Y g:i A') . ' - '.$event_end_datetime->format('g:i A')  . '</p>';
+        }
+    }
       
 		$output .= '<p class="event-location">';
             if ($event['is_virtual']) {
-                $output .= esc_html__( 'Online Event', 'shortcode-for-mobilizeamerica-api' );
+                // Conditional Location Text
+                $output .= $is_interest_form ? esc_html__( 'Interest Form', 'shortcode-for-mobilizeamerica-api' ) : esc_html__( 'Online Event', 'shortcode-for-mobilizeamerica-api' );
             } else {
                  $output .= esc_html( $event['location']['venue'] ) .  '<br />' . esc_html( $event['location']['address_lines'][0] ) . '<br />' .   esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] );
             }
@@ -97,10 +104,13 @@ if ( ! function_exists( 'mobilize_america_get_card_template' ) ) {
 	 * @param array $events Array of event data.
 	 * @param int $columns Number of columns
 	 * @param bool $show_description
+     * @param string $event_types Optional event types filter.
 	 * @return string HTML output for the events.
 	 */
-function mobilize_america_get_card_template( $events, $columns, $show_description ) {
+function mobilize_america_get_card_template( $events, $columns, $show_description, $event_types = '' ) {
 	$output = '';
+    $is_interest_form = ( strtoupper( $event_types ) === 'INTEREST_FORM' );
+
 	foreach ( $events as $event ) {
             // Format the timeslot start date and time.
             $event_start_datetime = New DateTime("@".$event['timeslots'][0]['start_date']);
@@ -114,11 +124,15 @@ function mobilize_america_get_card_template( $events, $columns, $show_descriptio
 
             $output .= '<div class="event-card">';
             $output .= '<h3 class="event-title"><a href="' . $event_url . '" target="_blank" rel="noopener noreferrer">' . esc_html( $event['title'] ) . '</a></h3>';
-           if ($event_duration == 86340) {$output .= '<p class="event-date">All Day Event</p>';}
-     else{
+           
+            // Conditional Date Display
+            if ( ! $is_interest_form ) {
+                if ($event_duration == 86340) {$output .= '<p class="event-date">All Day Event</p>';}
+                else{
+                    $output .= '<p class="event-date">' . $event_start_datetime->format('m/d/Y g:i A') . ' - '.$event_end_datetime->format('g:i A')  . '</p>';
+                }
+            }
 
-		$output .= '<p class="event-date">' . $event_start_datetime->format('m/d/Y g:i A') . ' - '.$event_end_datetime->format('g:i A')  . '</p>';
-		}
 
             if (isset($event['featured_image_url']) && !empty($event['featured_image_url'])) {
                  $output .= '<div class="event-image">';
@@ -133,7 +147,8 @@ function mobilize_america_get_card_template( $events, $columns, $show_descriptio
 
            $output .= '<p class="event-location">';
             if ($event['is_virtual']) {
-                $output .= esc_html__( 'Online Event', 'shortcode-for-mobilizeamerica-api' );
+                // Conditional Location Text
+                $output .= $is_interest_form ? esc_html__( 'Interest Form', 'shortcode-for-mobilizeamerica-api' ) : esc_html__( 'Online Event', 'shortcode-for-mobilizeamerica-api' );
             } else {
                  $output .= esc_html( $event['location']['venue'] ) .  '<br />' . esc_html( $event['location']['address_lines'][0] ) . '<br />'  . esc_html( $event['location']['locality'] ) . ', ' . esc_html( $event['location']['region'] );
             }

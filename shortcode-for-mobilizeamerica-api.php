@@ -2,13 +2,13 @@
 /**
  * Plugin Name: Shortcode for MobilizeAmerica API
  * Description: Displays events from Mobilize America on your WordPress site.
- * Version:     1.0.13
+ * Version:     1.0.15
  * Author:      South Florida Web Advisors
  * Author URI:  https://sflwa.net
  * License: GPLv2 or later
  * Requires at least: 6.7
  * Tested up to: 6.8
- * Stable tag: 1.0.13
+ * Stable tag: 1.0.15
  * Text Domain: shortcode-for-mobilizeamerica-api
  */
 
@@ -148,7 +148,7 @@ function mobilize_america_events_shortcode( $atts ) {
         'organization_id'   => '', // Organization ID is now required.
         'timeslot_start'    => 'gte_now', // ISO8601 date-time string
         'timeslot_end'      => '', // ISO8601 date-time string
-        'event_type'        => '', // event type
+        'event_types'       => '', // event type(s)
         'zipcode'           => '', // zipcode
         'radius'            => '', // radius
         'limit'             => 15,    // Maximum number of events to display.
@@ -178,32 +178,42 @@ function mobilize_america_events_shortcode( $atts ) {
         }
         $events = array($event_data); //wrap the single event in an array for consistent processing
     } else {
+        
+        // Check for the special 'INTEREST_FORM' case first
+        if ( ! empty( $atts['event_types'] ) && strtoupper( $atts['event_types'] ) === 'INTEREST_FORM' ) {
+            
+            // If INTEREST_FORM, only include event_types and ignore all other filtering attributes
+            $api_args = array(
+                'event_types' => $atts['event_types'],
+            );
+            
+        } else {
+            // Build the arguments array for the API request for all other cases (standard events).
+            $api_args = array(
+                'timeslot_start'    => $atts['timeslot_start'],
+                'timeslot_end'      => $atts['timeslot_end'],
+                'limit'             => $atts['limit'],
+                'organization_only' => $atts['organization_only'], // Pass organization_only to API class
+            );
 
-        // Build the arguments array for the API request.
-        $api_args = array(
-            'timeslot_start'    => $atts['timeslot_start'],
-            'timeslot_end'      => $atts['timeslot_end'],
-            'limit'             => $atts['limit'],
-            'organization_only' => $atts['organization_only'], // Pass organization_only to API class
-        );
+            if( !empty( $atts['event_types'] ) ) {
+                $api_args['event_types'] = $atts['event_types'];
+            }
 
-        if( !empty( $atts['event_type'] ) ) {
-            $api_args['event_type'] = $atts['event_type'];
-        }
+            if( !empty( $atts['zipcode'] ) ) {
+                $api_args['zipcode'] = $atts['zipcode'];
+            }
 
-        if( !empty( $atts['zipcode'] ) ) {
-            $api_args['zipcode'] = $atts['zipcode'];
+            if( !empty( $atts['radius'] ) ) {
+                $api_args['radius'] = $atts['radius'];
+            }
+            if( !empty( $atts['tag_id'] ) ) { 
+                $api_args['tag_id'] = $atts['tag_id'];
+            }
+            if( !empty( $atts['is_virtual'] ) ) {
+                $api_args['is_virtual'] = $atts['is_virtual'];
+            }
         }
-
-        if( !empty( $atts['radius'] ) ) {
-            $api_args['radius'] = $atts['radius'];
-        }
-        if( !empty( $atts['tag_id'] ) ) { 
-            $api_args['tag_id'] = $atts['tag_id'];
-        }
-        if( !empty( $atts['is_virtual'] ) ) {
-            $api_args['is_virtual'] = $atts['is_virtual'];
-        }    
         
         // Remove empty arguments.
         $api_args = array_filter( $api_args );
@@ -215,6 +225,21 @@ function mobilize_america_events_shortcode( $atts ) {
         }
     }
 
+    // Sort events by the start date of the first timeslot in ascending order (earliest first).
+    if ( is_array( $events ) && ! empty( $events ) ) {
+        usort( $events, function( $a, $b ) {
+            // Safely get the start date timestamp. Assume a very distant future time (PHP_INT_MAX) 
+            // if timeslots are missing to push events without a date to the end.
+            $time_a = isset( $a['timeslots'][0]['start_date'] ) ? intval( $a['timeslots'][0]['start_date'] ) : PHP_INT_MAX;
+            $time_b = isset( $b['timeslots'][0]['start_date'] ) ? intval( $b['timeslots'][0]['start_date'] ) : PHP_INT_MAX;
+            
+            if ( $time_a === $time_b ) {
+                return 0;
+            }
+            // Ascending order: -1 means $a comes before $b.
+            return ( $time_a < $time_b ) ? -1 : 1; 
+        });
+    }
 
     if ( empty( $events ) ) {
         return '<div class="mobilize-america-no-events">' . esc_html__( 'No events found.', 'shortcode-for-mobilizeamerica-api' ) . '</div>';
@@ -234,7 +259,8 @@ function mobilize_america_events_shortcode( $atts ) {
         return '<div class="mobilize-america-error">' . esc_html__( 'Error: Template file missing.', 'shortcode-for-mobilizeamerica-api' ) . '</div>';
     }
 
-    $output .= mobilize_america_get_template( $events, $atts['template'], intval($atts['columns']), $atts['show_description'] );
+    // MODIFIED: Pass event_types to the template function.
+    $output .= mobilize_america_get_template( $events, $atts['template'], intval($atts['columns']), $atts['show_description'], $atts['event_types'] );
     $output .= '</div>'; // Close events-wrapper
 
     return $output;

@@ -2,13 +2,13 @@
 /**
  * Plugin Name: Shortcode for MobilizeAmerica API
  * Description: Displays events from Mobilize America on your WordPress site.
- * Version:     1.0.16
+ * Version:     1.0.15
  * Author:      South Florida Web Advisors
  * Author URI:  https://sflwa.net
  * License: GPLv2 or later
  * Requires at least: 6.7
  * Tested up to: 6.8
- * Stable tag: 1.0.16
+ * Stable tag: 1.0.15
  * Text Domain: shortcode-for-mobilizeamerica-api
  */
 
@@ -100,18 +100,24 @@ class Mobilize_America_API {
         return $data['data'];
     }
 
-    /**
+/**
      * Get a single event by its ID.
      *
      * @param int $event_id The ID of the event to retrieve.
      * @return array|WP_Error The event data on success, WP_Error on failure.
      */
     public function get_event_by_id( $event_id ) {
-        $url = $this->api_url . 'events/' . intval( $event_id ) . '/';
+        // CORRECTED API ENDPOINT: Must include both organization ID and event ID in the path.
+        // Format: /v1/organizations/:organization_id/events/:event_id
+        $url = $this->api_url . 'organizations/' . intval( $this->organization_id ) . '/events/' . intval( $event_id );
 
         $response = wp_remote_get( $url );
 
         if ( is_wp_error( $response ) ) {
+            // Log the WP_Error message for connection issues
+            if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                error_log( 'Mobilize API WP_Error: ' . $response->get_error_message() );
+            }
             return new WP_Error( 'api_error', __( 'Error: Unable to connect to the Mobilize America API.', 'shortcode-for-mobilizeamerica-api' ), $response->get_error_message() );
         }
 
@@ -126,13 +132,19 @@ class Mobilize_America_API {
                 /* translators: 1: Error code returned from API. */
         $error_message = sprintf( __( 'Mobilize America API returned an error: %d', 'shortcode-for-mobilizeamerica-api' ), $response_code );
             }
+            // Log the final error message before returning the error object
+            if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                error_log( 'Mobilize API Error (Code ' . $response_code . '): ' . $error_message );
+            }
             return new WP_Error( 'api_error', $error_message, $data );
         }
 
-        if ( ! is_array( $data ) ) {
+        // FIX: The single event object is wrapped in a 'data' key in the response.
+        if ( ! isset( $data['data'] ) || ! is_array( $data['data'] ) ) {
             return new WP_Error( 'api_error', __( 'Error: Invalid data received from the Mobilize America API.', 'shortcode-for-mobilizeamerica-api' ), $data );
         }
-        return $data;
+        
+        return $data['data'];
     }
 }
 

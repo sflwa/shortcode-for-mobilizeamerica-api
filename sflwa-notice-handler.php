@@ -29,16 +29,16 @@ add_action( 'admin_init', 'sflwa_register_admin_notice' );
 /**
  * Registers the admin notice if it hasn't been permanently dismissed.
  *
- * This function checks for a transient set when the user dismisses the notice.
- * If the transient doesn't exist, it means the notice should be displayed.
+ * This function checks for a persistent option set when the user dismisses the notice.
+ * If the option is not set or not equal to '1', it means the notice should be displayed.
  */
 function sflwa_register_admin_notice() {
-    // Construct a unique transient name based on the plugin name.
-    // sanitize_title() ensures the name is safe for a transient key.
-    $transient_name = 'sflwa_notice_dismissed_' . sanitize_title( SFLWA_PLUGIN_NAME );
+    // Construct a unique option name based on the plugin name.
+    // sanitize_title() ensures the name is safe for an option key.
+    $option_name = 'sflwa_notice_dismissed_' . sanitize_title( SFLWA_PLUGIN_NAME );
 
-    // Check if the transient exists. If not, add the action to display the notice.
-    if ( ! get_transient( $transient_name ) ) {
+    // Check if the permanent option is set to '1'. If not, add the action to display the notice.
+    if ( get_option( $option_name ) !== '1' ) {
         add_action( 'admin_notices', 'sflwa_display_admin_notice' );
     }
 }
@@ -272,7 +272,7 @@ function sflwa_submit_plugin_info_callback() {
  * AJAX callback to permanently dismiss the admin notice.
  *
  * This function is hooked to 'wp_ajax_sflwa_dismiss_admin_notice'.
- * It sets a transient to prevent the notice from showing again for this plugin.
+ * It sets an option to prevent the notice from showing again for this plugin.
  */
 add_action( 'wp_ajax_sflwa_dismiss_admin_notice', 'sflwa_dismiss_admin_notice_callback' );
 function sflwa_dismiss_admin_notice_callback() {
@@ -282,11 +282,12 @@ function sflwa_dismiss_admin_notice_callback() {
     // Sanitize and retrieve the plugin name from the AJAX request.
     $plugin_name = isset( $_POST['plugin_name'] ) ? sanitize_text_field( wp_unslash( $_POST['plugin_name'] ) ) : '';
 
-    // Construct the unique transient name.
-    $transient_name = 'sflwa_notice_dismissed_' . sanitize_title( $plugin_name );
+    // Construct the unique option name.
+    $option_name = 'sflwa_notice_dismissed_' . sanitize_title( $plugin_name );
 
-    // Set a transient that never expires (0 seconds lifetime) to permanently hide the notice.
-    set_transient( $transient_name, '1', 0 );
+    // Set a permanent option to '1' to permanently hide the notice.
+    // The 'true' flag tells WordPress to autoload the option if it's new (which is good for a quick check).
+    update_option( $option_name, '1', true ); 
 
     wp_send_json_success( 'Notice dismissed permanently.' );
     wp_die(); // Always exit after an AJAX request.

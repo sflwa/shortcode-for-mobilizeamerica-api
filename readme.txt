@@ -34,7 +34,7 @@ The shortcode accepts the following attributes:
 * **timeslot_start:** (optional):  Suggested: gte_now which is greater than now - Unix timestamp to filter events.  Only shows events withtimeslots starting after this date.
 * **timeslot_end:** (optional): Unix timestamp to filter events. Only shows events with timeslots starting before this date.
 Note: For timeslot please use comparison text -  The comparison operators are ≥ gte, > gt, ≤ lte, < lt
-* **event_type: (optional):**  Filters events by event type.
+* **event_types: (optional):**  Filters events by event type.
 * **zipcode: (optional):**  Filters events by zipcode.
 * **radius: (optional):**  Filters events by a radius around the zipcode.
 * **limit: (optional):** The maximum number of events to display. Default is 10.
@@ -89,7 +89,14 @@ Display virtual events in 2 columns:
 
 
 ## Change Log
-2025-09-19 v 1.0.13
+2025-11-17 v1.0.15
+* Fixed Single Event Filtering
+
+2025-10-22 v1.0.14
+* Fixed Sort to be in date order regardless of how it is in the API results
+* Fixed event_types - added "s" - use INTEREST_FORM to show Interest forms - must be displayed separate from other events
+
+2025-09-19 v1.0.13
 * Fixed Timezone issue for time display - uses WP Timezone vs GMT offset - this was only an issue when a future event was after the Daylight Savings Time Switch
 
 2025-08-06 v1.0.12

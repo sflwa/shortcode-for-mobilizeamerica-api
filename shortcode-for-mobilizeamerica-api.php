@@ -114,10 +114,6 @@ class Mobilize_America_API {
         $response = wp_remote_get( $url );
 
         if ( is_wp_error( $response ) ) {
-            // Log the WP_Error message for connection issues
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                error_log( 'Mobilize API WP_Error: ' . $response->get_error_message() );
-            }
             return new WP_Error( 'api_error', __( 'Error: Unable to connect to the Mobilize America API.', 'shortcode-for-mobilizeamerica-api' ), $response->get_error_message() );
         }
 
@@ -131,10 +127,6 @@ class Mobilize_America_API {
             } else {
                 /* translators: 1: Error code returned from API. */
         $error_message = sprintf( __( 'Mobilize America API returned an error: %d', 'shortcode-for-mobilizeamerica-api' ), $response_code );
-            }
-            // Log the final error message before returning the error object
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                error_log( 'Mobilize API Error (Code ' . $response_code . '): ' . $error_message );
             }
             return new WP_Error( 'api_error', $error_message, $data );
         }
@@ -154,7 +146,7 @@ class Mobilize_America_API {
  * @param array $atts Shortcode attributes.
  * @return string HTML output for the events.
  */
-function mobilize_america_events_shortcode( $atts ) {
+function scfmaapi_mobilize_america_events_shortcode( $atts ) {
     $atts = shortcode_atts(
         array(
         'organization_id'   => '', // Organization ID is now required.
@@ -278,7 +270,7 @@ function mobilize_america_events_shortcode( $atts ) {
     return $output;
 
 }
-add_shortcode( 'mobilize_america_events', 'mobilize_america_events_shortcode' );
+add_shortcode( 'mobilize_america_events', 'scfmaapi_mobilize_america_events_shortcode' );
 
 // Check if Elementor is installed before hooking into it.
 if ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '1.0.0', '>=' ) ) {
@@ -292,6 +284,6 @@ function scfmaapi_register_mobilize_america_widget() {
     // Include the widget class file.
     require_once( __DIR__ . '/includes/elementor-widget.php' );
 
-    // Register the widget.
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type( new \scfmaapi_Widget_Mobilize_America_Events() );
+    // Register the widget using the correct class name without leading namespace indicator.
+    \Elementor\Plugin::instance()->widgets_manager->register_widget_type( new scfmaapi_Widget_Mobilize_America_Events() );
 }
